@@ -18,8 +18,10 @@ model.add(Conv2D(1, kernel_size=(1, 1),
 model.compile(loss='mean_squared_error', optimizer='adagrad', metrics=['accuracy'])
 
 
-for _ in tqdm.trange(100):
-    x, y = input_pairs(1000)
-    tqdm.tqdm.write("Model loss %f, %f" % tuple(model.train_on_batch(x, y)))
+def generator():
+    while True:
+        yield input_pairs(128)
+
+model.fit_generator(generator(), samples_per_epoch=5000)
 
 model.save('grayscale.h5')
